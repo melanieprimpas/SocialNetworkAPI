@@ -53,7 +53,7 @@ export const deleteThought = async (req: Request, res: Response) => {
         }
 
         const user = await User.findOneAndUpdate(
-            { thought: req.params.thoughtId },
+            { thoughts: req.params.thoughtId },
             { $pull: { thought: req.params.thoughtId } },
             { new: true }
         );
@@ -85,4 +85,51 @@ export const updateThought = async (req: Request, res: Response) => {
         console.log('Uh Oh, something went wrong');
         res.status(500).json({ message: 'something went wrong' });
       }
+}
+
+// create a reaction stored in a single thought
+export const createReaction = async (req: Request, res: Response) => {
+    try {
+        const thought = await Thought.findOneAndUpdate(
+            { _id: req.params.thoughtId },
+            { $addToSet: { reactions: req.body} },
+            { new: true }
+          );
+            res.json(`Created the reaction for ${thought}.`)
+    
+    } catch (err) {
+        console.log(err);
+        res.status(500).json(err);
+    }
+}
+
+// delete a reaction and pull from the related thought
+export const deleteReaction = async (req: Request, res: Response) => {
+    try {
+        const thought = await Thought.findOne({ _id: req.params.reactionId });
+           if(!thought) {
+            return res.status(404).json({
+                message: 'Thought not found',
+            });
+           } 
+           const reaction = thought.reactions.some(reaction => reaction.reactionId.toString() === req.params.reactionId);
+           if (!reaction) {
+            return res.status(404).json({
+                message: 'Reaction not found',
+            });
+           }
+
+           //reaction exists => remove reaction from thought
+           const updatedThought = await Thought.findOneAndUpdate(
+            { _id: req.params.thoughtId },
+            { $pull: { reactions : { reactionId: req.params.reactionId } } },
+            { new: true }
+           )
+
+        return res.json({ message: `Reaction successfully deleted from thought. Updated thought: ${updatedThought}` });
+     
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
 }

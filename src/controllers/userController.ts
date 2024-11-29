@@ -67,3 +67,50 @@ export const deleteUser = async (req: Request, res: Response) => {
         return res.status(500).json(err);
     }
 }
+
+// add a new friend to users friend list
+export const addFriend = async (req: Request, res: Response) => {
+    try {
+        const user = await User.findOneAndUpdate(
+            { _id: req.params.userId },
+            { $addToSet: { friends: req.body} },
+            { new: true }
+          );
+            res.json(`Added new friend to ${user}.`)
+    
+    } catch (err) {
+        console.log(err);
+        res.status(500).json(err);
+    }
+}
+
+// delete a reaction and pull from the related thought
+export const deleteFriend = async (req: Request, res: Response) => {
+    try {
+        const user = await User.findOne({ _id: req.params.userId });
+           if(!user) {
+            return res.status(404).json({
+                message: 'Friend not found',
+            });
+           } 
+           const friend = user.friends.some(friendId => friendId.toString() === req.params.friendId);
+           if (!friend) {
+            return res.status(404).json({
+                message: 'Friend not found',
+            });
+           }
+
+           //Friend exists => remove friend from user
+           const updatedUser = await User.findOneAndUpdate(
+            { _id: req.params.userId },
+            { $pull: { friends : req.params.friendId } },
+            { new: true }
+           ).populate('friends')
+
+        return res.json({ message: `Friend successfully deleted from ${updatedUser}` });
+     
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+}
