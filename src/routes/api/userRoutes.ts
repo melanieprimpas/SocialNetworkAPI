@@ -21,7 +21,7 @@ router.delete('/:userId', deleteUser);
 //route to update user by ID
 router.put('/:userId', updateUser);
 
-//route to add friend by thought ID
+//route to add friend by user ID
 router.post('/:userId/friend', addFriend);
 //rotue to delete reaction by thought ID
 router.delete('/:userId/friend/:friendId', deleteFriend);
