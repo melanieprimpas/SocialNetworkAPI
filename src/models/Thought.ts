@@ -27,7 +27,7 @@ const reactionSchema = new Schema<IReaction>({
     }
 })
 
-interface IThought extends Document {
+export interface IThought extends Document {
     thoughtText: string;
     createdAt: Date;
     username: string;
