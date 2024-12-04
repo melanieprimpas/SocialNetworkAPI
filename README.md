@@ -6,4 +6,4 @@ Insomnia was used to test all of the API routes.
 https://github.com/melanieprimpas/SocialNetworkAPI
 
 ## Demonstration Video
-https://drive.google.com/drive/home?dmr=1&ec=wgc-drive-globalnav-goto
+https://drive.google.com/file/d/1q6E2Qf3xc_OUVy6aC83k71M3DNKTX84j/view?usp=sharing
