@@ -26,7 +26,7 @@ export const createThought = async (req: Request, res: Response) => {
     try {
         const thought = await Thought.create(req.body);
         const user = await User.findOneAndUpdate(
-            { _id: req.body.userId },
+            { username: req.body.username },
             { $addToSet: { thoughts: thought._id } },
             { new: true }
           );
@@ -106,7 +106,7 @@ export const createReaction = async (req: Request, res: Response) => {
 // delete a reaction and pull from the related thought
 export const deleteReaction = async (req: Request, res: Response) => {
     try {
-        const thought = await Thought.findOne({ _id: req.params.reactionId });
+        const thought = await Thought.findOne({ _id: req.params.thoughtId });
            if(!thought) {
             return res.status(404).json({
                 message: 'Thought not found',
